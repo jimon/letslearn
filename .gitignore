@@ -1,0 +1,5 @@
+Makefile
+.ninja_*
+build.*
+build/*
+!build.fox
