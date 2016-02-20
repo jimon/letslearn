@@ -2,7 +2,7 @@
 
 Stuff to recall forgotten knowledge
 
-### TODO
+### Stuff
 
 - sorts
 	- exchange sorts

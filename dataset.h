@@ -47,11 +47,7 @@ struct dataset_t
 			if(last <= items[i])
 				last = items[i];
 			else
-			{
-				print();
-				assert(false);
 				return false;
-			}
 		return true;
 	}
 };

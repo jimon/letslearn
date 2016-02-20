@@ -1,3 +1,4 @@
 
+cxxflags += $cxx_extra_warnings
 build objects(build/*): auto *.cpp || *.h
 build application(build/letslearn): auto objects(build/**/*)
