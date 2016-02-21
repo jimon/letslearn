@@ -4,6 +4,40 @@
 
 uint32_t hash_fnv1(uint32_t key);
 
+struct linkedlist_t
+{
+	static const uint32_t invalid = 0xffffffffu;
+
+	struct node_t
+	{
+		uint32_t value = invalid;
+		uint32_t prev = invalid;
+		uint32_t next = invalid;
+		inline void free() {value = invalid;}
+		inline bool taken() const {return value != invalid;}
+	};
+
+	// to simplify memory management let's say
+	// linked list can only contain up to N elements
+	static const uint32_t count = 7;
+	node_t arr[count];
+	uint32_t last_index = invalid;
+	uint32_t next_free = 0;
+
+	linkedlist_t();
+	uint32_t allocate();
+	void deallocate(uint32_t index);
+	uint32_t last() const {return last_index;}
+	uint32_t next(uint32_t index) const {return index != invalid ? arr[index].next : invalid;}
+	uint32_t prev(uint32_t index) const {return index != invalid ? arr[index].prev: invalid;}
+	uint32_t value(uint32_t index) const {return index != invalid ? arr[index].value: invalid;}
+	uint32_t insert(uint32_t value) {return insert_after(value, last());}
+	uint32_t insert_after(uint32_t value, uint32_t index);
+	uint32_t insert_before(uint32_t value, uint32_t index);
+	void remove(uint32_t index);
+	void print() const;
+};
+
 struct hashtable_t
 {
 	static const uint32_t invalid = 0xffffffffu;

@@ -18,6 +18,17 @@ bool sorts_test(void (*sort)(dataset_t&), size_t count = 1000)
 	return true;
 }
 
+bool linkedlist_test()
+{
+	linkedlist_t list;
+	list.insert(0);
+	for(uint32_t i = 0; i < list.count - 1; ++i)
+		list.insert_before(i, 0);
+	while(list.last() != list.invalid)
+		list.remove(list.last());
+	return true;
+}
+
 bool hashtable_test(float loadfactor = 1.0)
 {
 	hashtable_t table;
@@ -44,6 +55,7 @@ int main()
 	assert(sorts_test(&sorts_radixsort));
 	assert(sorts_test(&sorts_bitonicsort));
 
+	assert(linkedlist_test());
 	assert(hashtable_test());
 	#endif
 
@@ -57,6 +69,7 @@ int main()
 		//printf("valid : %i\n", a.validate());
 		//assert(a.validate());
 	}
+
 
 	printf("so wow\n");
 	return 0;

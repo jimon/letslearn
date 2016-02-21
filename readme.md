@@ -22,7 +22,7 @@ Stuff to recall forgotten knowledge
 		- tim sort
 - data structures
 	- containers
-		- linked list in one dynamic array
+		- linked list in one array **✓**
 		- hash table **✓**
 		- hashed array tree
 		- skip list ???
