@@ -65,3 +65,25 @@ void hashtable_t::print() const
 	}
 	printf("load factor : %.3f\n", (float)taken / (float)count);
 }
+
+uint32_t btree_t::next_free() const
+{
+	for(uint32_t i = 0; i < count; ++i)
+		if(!arr[i].taken())
+			return i;
+	return invalid;
+}
+
+bool btree_t::set(uint32_t key, uint32_t value)
+{
+	return false;
+}
+
+void btree_t::remove(uint32_t value)
+{
+}
+
+uint32_t btree_t::get(uint32_t key) const
+{
+	return invalid;
+}

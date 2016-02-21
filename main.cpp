@@ -37,7 +37,7 @@ bool hashtable_test(float loadfactor = 1.0)
 
 int main()
 {
-	#if 1
+	#if 0
 	assert(sorts_test(&sorts_bubble));
 	assert(sorts_test(&sorts_quicksort));
 	assert(sorts_test(&sorts_mergesort));
@@ -57,6 +57,15 @@ int main()
 		//printf("valid : %i\n", a.validate());
 		//assert(a.validate());
 	}
+
+	btree_t tree;
+
+	for(uint32_t i = 0; i < 30; ++i)
+		tree.set(i, i);
+
+	printf("%u\n", tree.get(2));
+
+
 
 	printf("so wow\n");
 	return 0;
