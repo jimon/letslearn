@@ -23,10 +23,10 @@ struct dataset_t
 
 	inline void swap(size_t a, size_t b) {int32_t t = items[a]; items[a] = items[b]; items[b] = t;}
 
-	static dataset_t random()
+	static dataset_t random(size_t count = 0)
 	{
 		dataset_t result;
-		result.count = rand() % (sizeof(items) / sizeof(items[0]));
+		result.count = count ? count : rand() % (sizeof(items) / sizeof(items[0]));
 		for(size_t i = 0; i < result.count; ++i)
 			result.items[i] = rand();
 		return result;
