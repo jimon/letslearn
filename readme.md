@@ -6,18 +6,18 @@ Stuff to recall forgotten knowledge
 
 - sorts
 	- exchange sorts
-		- bubble sort
-		- quicksort
+		- bubble sort **✓**
+		- quicksort **✓**
 	- selection sorts
 		- heap sort
 	- insection sorts
 		- tree sort
 	- merge sorts
-		- merge sort
+		- merge sort **✓**
 	- distribution sorts
 		- radix sort
 	- concurrent sorts
-		- bitonic sorter
+		- bitonic sorter **✓**
 	- hybrid sorts
 		- tim sort
 - data structures
