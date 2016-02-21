@@ -10,18 +10,18 @@
 // let's just do array of integers
 struct dataset_t
 {
-	int32_t items[256] = {0};
+	uint32_t items[256] = {0};
 	size_t count = 0;
 
 	dataset_t() {}
-	dataset_t(std::initializer_list<int32_t> init)
+	dataset_t(std::initializer_list<uint32_t> init)
 	{
 		assert(init.size() < sizeof(items) / sizeof(items[0]));
-		for(int32_t data: init)
+		for(uint32_t data: init)
 			items[count++] = data;
 	}
 
-	inline void swap(size_t a, size_t b) {int32_t t = items[a]; items[a] = items[b]; items[b] = t;}
+	inline void swap(size_t a, size_t b) {uint32_t t = items[a]; items[a] = items[b]; items[b] = t;}
 
 	static dataset_t random(size_t count = 0)
 	{
@@ -36,13 +36,13 @@ struct dataset_t
 	{
 		printf("%zu: {", count); // TODO
 		for(size_t i = 0; i < count; ++i)
-			printf("%i%s", items[i], i + 1 == count ? "" : ", ");
+			printf("%u%s", items[i], i + 1 == count ? "" : ", ");
 		printf("}\n");
 	}
 
 	bool validate() const
 	{
-		int32_t last = INT32_MIN;
+		uint32_t last = 0;
 		for(size_t i = 0; i < count; ++i)
 			if(last <= items[i])
 				last = items[i];

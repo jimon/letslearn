@@ -29,7 +29,7 @@ void sorts_quicksort(dataset_t & data)
 		if(left >= right)
 			return;
 		size_t pivot = left; // TODO figure out why only this pivot point works
-		int32_t pivot_val = data.items[pivot];
+		auto pivot_val = data.items[pivot];
 		size_t i = left + 1;
 		size_t j = right;
 
@@ -61,7 +61,8 @@ void sorts_mergesort(dataset_t & data)
 	static void (*merge)(dataset_t&, size_t, size_t, size_t) =
 	[](dataset_t & data, size_t left, size_t right, size_t middle)
 	{
-		int32_t * temp = (int32_t*)alloca((right - left + 1) * sizeof(int32_t));
+		auto temp = (decltype(&dataset_t::items[0]))alloca(
+						(right - left + 1) * sizeof(dataset_t::items[0]));
 		for(size_t i = left, j = middle + 1, k = 0; k + left <= right; ++k)
 			if(i > middle || j <= right && data.items[j] < data.items[i])
 				temp[k] = data.items[j++];
@@ -84,6 +85,47 @@ void sorts_mergesort(dataset_t & data)
 
 	if(data.count)
 		sort(data, 0, data.count - 1);
+}
+
+void sorts_radixsort(dataset_t & data)
+{
+	static void (*sort)(dataset_t&, size_t, size_t, uint32_t) =
+	[](dataset_t & data, size_t left, size_t right, uint32_t bit)
+	{
+		if(left >= right || !bit)
+			return;
+
+		size_t i = left, j = right;
+		while(i < j)
+		{
+			if(!(data.items[i] & bit))
+				++i;
+			else if(data.items[j] & bit)
+				--j;
+			else
+				data.swap(i, j);
+		}
+
+		if(i > left && (data.items[i] & bit))
+			--i;
+		if(j < right && !(data.items[j] & bit))
+			++j;
+
+		sort(data, left, i, bit >> 1);
+		sort(data, j, right, bit >> 1);
+	};
+
+	if(data.count)
+	{
+		auto max = data.items[0];
+		for(size_t i = 1; i < data.count; ++i)
+			if(max < data.items[i])
+				max = data.items[i];
+		uint32_t bit = 1;
+		while(max >>= 1)
+			bit <<= 1;
+		sort(data, 0, data.count - 1, bit);
+	}
 }
 
 void sorts_bitonicsort(dataset_t & data)

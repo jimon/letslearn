@@ -15,7 +15,7 @@ Stuff to recall forgotten knowledge
 	- merge sorts
 		- merge sort **✓**
 	- distribution sorts
-		- radix sort
+		- radix sort **✓**
 	- concurrent sorts
 		- bitonic sorter **✓**
 	- hybrid sorts
