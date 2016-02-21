@@ -1,4 +1,5 @@
 #include "sorts.h"
+#include <malloc.h>
 
 void sorts_bubble(dataset_t & data)
 {
@@ -22,7 +23,8 @@ void sorts_bubble(dataset_t & data)
 void sorts_quicksort(dataset_t & data)
 {
 	// TODO try more optimized versions
-	static void (*sort)(dataset_t&, size_t, size_t) = [](dataset_t & data, size_t left, size_t right)
+	static void (*sort)(dataset_t&, size_t, size_t) =
+	[](dataset_t & data, size_t left, size_t right)
 	{
 		if(left >= right)
 			return;
@@ -48,6 +50,36 @@ void sorts_quicksort(dataset_t & data)
 
 		sort(data, left, i);
 		sort(data, j, right);
+	};
+
+	if(data.count)
+		sort(data, 0, data.count - 1);
+}
+
+void sorts_mergesort(dataset_t & data)
+{
+	static void (*merge)(dataset_t&, size_t, size_t, size_t) =
+	[](dataset_t & data, size_t left, size_t right, size_t middle)
+	{
+		int32_t * temp = (int32_t*)alloca((right - left + 1) * sizeof(int32_t));
+		for(size_t i = left, j = middle + 1, k = 0; k + left <= right; ++k)
+			if(i > middle || j <= right && data.items[j] < data.items[i])
+				temp[k] = data.items[j++];
+			else
+				temp[k] = data.items[i++];
+		for(size_t k = 0; k + left <= right; ++k)
+			data.items[k + left] = temp[k];
+	};
+
+	static void (*sort)(dataset_t&, size_t, size_t) =
+	[](dataset_t & data, size_t left, size_t right)
+	{
+		if(left >= right)
+			return;
+		size_t middle = (left + right) / 2;
+		sort(data, left, middle);
+		sort(data, middle + 1, right);
+		merge(data, left, right, middle);
 	};
 
 	if(data.count)

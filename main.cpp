@@ -18,16 +18,17 @@ int main()
 {
 	assert(sorts_test(&sorts_bubble));
 	assert(sorts_test(&sorts_quicksort));
+	assert(sorts_test(&sorts_mergesort));
 
-	for(size_t i = 0; i < 1000; ++i)
+	//for(size_t i = 0; i < 1000; ++i)
 	{
-		dataset_t a = {5,4,3,2,1};
-		//dataset_t a = dataset_t::random();
+		//dataset_t a = {5,4,3,2,1};
+		dataset_t a = dataset_t::random();
 		//a.print();
-		sorts_quicksort(a);
-		//a.print();
-		//printf("valid : %i\n", a.validate());
-		assert(a.validate());
+		sorts_mergesort(a);
+		a.print();
+		printf("valid : %i\n", a.validate());
+		//assert(a.validate());
 	}
 
 
