@@ -13,8 +13,8 @@ struct hashtable_t
 		uint32_t key = invalid;
 		uint32_t value = invalid;
 
-		inline void free() {key = invalid; value = invalid;}
-		inline bool taken() const {return key != invalid || value != invalid;}
+		inline void free() {key = invalid;}
+		inline bool taken() const {return key != invalid;}
 	};
 
 	// to simplify memory management let's say
@@ -29,4 +29,40 @@ struct hashtable_t
 	void remove(uint32_t key);
 
 	void print() const;
+};
+
+struct btree_t
+{
+	static const uint32_t invalid = 0xffffffffu;
+
+	struct node_t
+	{
+		static const uint32_t order = 2;
+
+		uint32_t keys[order] = {invalid};
+		uint32_t values[order] = {invalid};
+		uint32_t children[order + 1] = {invalid};
+
+		inline void free()
+		{
+			for(uint32_t i = 0; i < order; ++i)
+				keys[i] = invalid;
+		}
+		inline bool taken() const
+		{
+			for(uint32_t i = 0; i < order; ++i)
+				if(keys[i] != invalid)
+					return true;
+			return false;
+		}
+	};
+
+	// to simplify memory management let's say
+	// btree can only contain up to N nodes
+	static const uint32_t count = 256;
+	node_t arr[count];
+
+	bool set(uint32_t key, uint32_t value);
+	uint32_t get(uint32_t key) const;
+	void remove(uint32_t key);
 };
