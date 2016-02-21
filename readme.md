@@ -23,7 +23,7 @@ Stuff to recall forgotten knowledge
 - data structures
 	- containers
 		- linked list in one dynamic array
-		- hash table
+		- hash table **✓**
 		- hashed array tree
 		- skip list ???
 	- trees

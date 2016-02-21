@@ -1,6 +1,10 @@
 
 #include <stdio.h>
+#include <assert.h>
 #include "sorts.h"
+#include "containers.h"
+
+#include <stdlib.h>
 
 bool sorts_test(void (*sort)(dataset_t&), size_t count = 1000)
 {
@@ -14,6 +18,23 @@ bool sorts_test(void (*sort)(dataset_t&), size_t count = 1000)
 	return true;
 }
 
+bool hashtable_test(float loadfactor = 1.0)
+{
+	hashtable_t table;
+	uint32_t keys[hashtable_t::count] = {0};
+	uint32_t values[hashtable_t::count] = {0};
+	uint32_t payload = (uint32_t)((float)hashtable_t::count * loadfactor);
+
+	for(uint32_t i = 0; i < payload; ++i)
+		table.set(keys[i] = rand(), values[i] = rand());
+
+	for(uint32_t i = 0; i < payload; ++i)
+		if(values[i] != table.get(keys[i]))
+			return false;
+
+	return true;
+}
+
 int main()
 {
 	#if 1
@@ -22,19 +43,20 @@ int main()
 	assert(sorts_test(&sorts_mergesort));
 	assert(sorts_test(&sorts_radixsort));
 	assert(sorts_test(&sorts_bitonicsort));
+
+	assert(hashtable_test());
 	#endif
 
 	//for(size_t i = 0; i < 1000; ++i)
 	{
 		//dataset_t a = {8,7,6,5,4,3,2,1};
-		dataset_t a = dataset_t::random(33);
+		//dataset_t a = dataset_t::random(33);
 		//a.print();
-		sorts_radixsort(a);
-		a.print();
-		printf("valid : %i\n", a.validate());
+		//sorts_radixsort(a);
+		//a.print();
+		//printf("valid : %i\n", a.validate());
 		//assert(a.validate());
 	}
-
 
 	printf("so wow\n");
 	return 0;
