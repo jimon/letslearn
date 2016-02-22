@@ -64,3 +64,52 @@ struct hashtable_t
 
 	void print() const;
 };
+
+struct rbtree_t
+{
+	static const uint32_t invalid = 0xffffffffu;
+
+	struct node_t
+	{
+		uint32_t key = invalid;
+		uint32_t value = invalid;
+		uint32_t left = invalid;
+		uint32_t right = invalid;
+		uint32_t parent = invalid;
+		bool color = false; // 0 black, 1 red
+
+		inline void free()
+		{
+			key = invalid;
+			value = invalid;
+			left = invalid;
+			right = invalid;
+			parent = invalid;
+			color = false;
+		}
+		inline bool taken() const {return key != invalid;}
+	};
+
+	// to simplify memory management let's say
+	// rb tree can only contain up to N elements
+	static const uint32_t count = 256;
+	node_t arr[count];
+	uint32_t root = invalid;
+
+	uint32_t allocate();
+
+	uint32_t grandparent(uint32_t index) const;
+	uint32_t sibling(uint32_t index) const;
+	uint32_t uncle(uint32_t index) const;
+	bool color(uint32_t index) const;
+	bool validate() const;
+
+	uint32_t find_index(uint32_t key) const;
+	uint32_t get(uint32_t key) const;
+
+	void swap(uint32_t i, uint32_t j);
+	void rotate_left(uint32_t index);
+	void rotate_right(uint32_t index);
+
+	void set(uint32_t key, uint32_t value);
+};

@@ -70,6 +70,8 @@ int main()
 		//assert(a.validate());
 	}
 
+	rbtree_t t;
+
 
 	printf("so wow\n");
 	return 0;
