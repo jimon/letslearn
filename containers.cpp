@@ -1,5 +1,6 @@
 #include "containers.h"
 #include <stdio.h>
+#include <assert.h>
 
 uint32_t hash_fnv1(uint32_t key)
 {
@@ -253,7 +254,7 @@ uint32_t rbtree_t::find_index(uint32_t key) const
 {
 	uint32_t index = root;
 	while(index != invalid && arr[index].key != key)
-		index = key < arr[index].value ? arr[index].left : arr[index].right;
+		index = key < arr[index].key ? arr[index].left : arr[index].right;
 	return index;
 }
 
@@ -263,13 +264,21 @@ uint32_t rbtree_t::get(uint32_t key) const
 	return index != invalid ? arr[index].value : index;
 }
 
-void rbtree_t::swap(uint32_t i, uint32_t j)
+void rbtree_t::swap(uint32_t old_node, uint32_t new_node)
 {
-	if(i == invalid || j == invalid)
+	if(old_node == invalid || new_node == invalid)
 		return;
-	node_t t = arr[i];
-	arr[i] = arr[j];
-	arr[j] = t;
+	else if(root == old_node)
+		root = new_node;
+	else
+	{
+		assert(arr[old_node].parent != invalid);
+		if(arr[arr[old_node].parent].left == old_node)
+			arr[arr[old_node].parent].left = new_node;
+		else
+			arr[arr[old_node].parent].right = new_node;
+	}
+	arr[new_node].parent = arr[old_node].parent;
 }
 
 void rbtree_t::rotate_left(uint32_t index)
@@ -281,9 +290,9 @@ void rbtree_t::rotate_left(uint32_t index)
 	// D A     B C
 	//    C   D
 
-	uint32_t index_a = index;
-	uint32_t index_b = arr[index].right;
-	if(index_b == invalid)
+	uint32_t index_b = index;
+	uint32_t index_a = arr[index].right;
+	if(index_a == invalid)
 		return;
 	swap(index_b, index_a);
 	arr[index_b].right = arr[index_a].left;
@@ -301,11 +310,11 @@ void rbtree_t::rotate_right(uint32_t index)
 	// B C     D A
 	//D           C
 
-	uint32_t index_b = index;
-	uint32_t index_a = arr[index].left;
-	if(index_a == invalid)
+	uint32_t index_a = index;
+	uint32_t index_b = arr[index].left;
+	if(index_b == invalid)
 		return;
-	swap(index_b, index_a);
+	swap(index_a, index_b);
 	arr[index_a].left = arr[index_b].right;
 	if(arr[index_a].left != invalid)
 		arr[arr[index_a].left].parent = index_a;
@@ -319,11 +328,80 @@ void rbtree_t::set(uint32_t key, uint32_t value)
 		root = allocate();
 		arr[root].key = key;
 		arr[root].value = value;
+		arr[root].color = false;
 		return;
 	}
+
+	uint32_t index = root, last_index = invalid;
+	bool left = false;
+
+	while(index != invalid && arr[index].key != key)
+	{
+		last_index = index;
+		left = key < arr[index].key;
+		index = left ? arr[index].left : arr[index].right;
+	}
+
+	if(index != invalid)
+	{
+		arr[index].value = value;
+		return;
+	}
+
+	uint32_t new_node = allocate();
+	arr[new_node].key = key;
+	arr[new_node].value = value;
+	arr[new_node].color = true;
+	arr[new_node].parent = last_index;
+	if(left)
+		arr[last_index].left = new_node;
+	else
+		arr[last_index].right = new_node;
 
 	//uint32_t index = root, last_index = invalid;
 	//while(index != invalid && arr[index].key != key)
 	//	index = key < arr[index].value ? arr[index].left : arr[index].right;
 
+}
+
+void rbtree_t::print(uint32_t height) const
+{
+	if(!height)
+	{
+		for(uint32_t i = 0; i < count; ++i)
+			printf("%02u %s %02i:%02i %02i (%i:%i)\n", i,
+				   root == i ? "X" : arr[i].color ? "r": "b",
+				   arr[i].left, arr[i].right,
+				   arr[i].parent,
+				   arr[i].key, arr[i].value);
+	}
+
+	static void (*pprint)(const rbtree_t*, uint32_t, uint32_t, uint32_t, uint32_t) =
+	[](const rbtree_t * tree, uint32_t index, uint32_t deep, uint32_t target, uint32_t total)
+	{
+		if(deep == target)
+		{
+			if(index != invalid)
+				printf("%u", tree->arr[index].key);
+			else
+				printf("x");
+			printf("%*s", (1 << (total - target + 1)) - 1, "");
+		}
+		else
+		{
+			pprint(tree, index != invalid ? tree->arr[index].left : invalid, deep + 1, target, total);
+			pprint(tree, index != invalid ? tree->arr[index].right : invalid, deep + 1, target, total);
+		}
+	};
+
+	if(height)
+	{
+		for(uint32_t i = 0; i <= height; ++i)
+		{
+			if(i < height)
+				printf("%*s", (1 << (height - i)) - 1, "");
+			pprint(this, root, 0, i, height);
+			printf("\n");
+		}
+	}
 }

@@ -72,6 +72,24 @@ int main()
 
 	rbtree_t t;
 
+	t.set(1, 1);
+	t.set(2, 2);
+	t.set(3, 3);
+	t.set(4, 3);
+	t.set(5, 3);
+	//t.set(0, 3);
+
+	t.rotate_left(t.root);
+	t.rotate_left(t.root);
+	t.rotate_left(t.root);
+	t.rotate_left(t.root);
+
+	t.rotate_right(t.root);
+	t.rotate_right(t.root);
+	t.rotate_right(t.root);
+	t.rotate_right(t.root);
+
+	t.print(4);
 
 	printf("so wow\n");
 	return 0;
