@@ -279,6 +279,7 @@ void rbtree_t::swap(uint32_t old_node, uint32_t new_node)
 			arr[arr[old_node].parent].right = new_node;
 	}
 	arr[new_node].parent = arr[old_node].parent;
+	arr[old_node].parent = new_node;
 }
 
 void rbtree_t::rotate_left(uint32_t index)
@@ -328,7 +329,7 @@ void rbtree_t::set(uint32_t key, uint32_t value)
 		root = allocate();
 		arr[root].key = key;
 		arr[root].value = value;
-		arr[root].color = false;
+		balance(root);
 		return;
 	}
 
@@ -351,17 +352,69 @@ void rbtree_t::set(uint32_t key, uint32_t value)
 	uint32_t new_node = allocate();
 	arr[new_node].key = key;
 	arr[new_node].value = value;
-	arr[new_node].color = true;
 	arr[new_node].parent = last_index;
 	if(left)
 		arr[last_index].left = new_node;
 	else
 		arr[last_index].right = new_node;
 
-	//uint32_t index = root, last_index = invalid;
-	//while(index != invalid && arr[index].key != key)
-	//	index = key < arr[index].value ? arr[index].left : arr[index].right;
+	balance(new_node);
+	assert(validate());
+}
 
+void rbtree_t::balance(uint32_t index)
+{
+	if(index == invalid)
+		return;
+
+	if(arr[index].parent == invalid)
+	{
+		arr[index].color = false;
+		return;
+	}
+	else
+		arr[index].color = true;
+
+	if(color(arr[index].parent) == false)
+		return;
+
+	assert(grandparent(index) != invalid);
+
+	if(color(uncle(index)) == true)
+	{
+		arr[arr[index].parent].color = false;
+		uint32_t uncle_index = uncle(index);
+		if(uncle_index != invalid)
+			arr[uncle_index].color = false;
+		uint32_t grandparent_index = grandparent(index);
+		arr[grandparent_index].color = true;
+		balance(grandparent_index);
+		return;
+	}
+
+	if(arr[arr[index].parent].right == index && arr[index].parent == arr[grandparent(index)].left)
+	{
+		rotate_left(arr[index].parent);
+		index = arr[index].left;
+	}
+	else if(arr[arr[index].parent].left == index && arr[index].parent == arr[grandparent(index)].right)
+	{
+		rotate_right(arr[index].parent);
+		index = arr[index].right;
+	}
+
+	arr[arr[index].parent].color = false;
+	arr[grandparent(index)].color = true;
+
+	if(arr[arr[index].parent].left == index && arr[index].parent == arr[grandparent(index)].left)
+	{
+		rotate_right(grandparent(index));
+	}
+	else
+	{
+		assert(arr[arr[index].parent].right == index && arr[index].parent == arr[grandparent(index)].right);
+		rotate_left(grandparent(index));
+	}
 }
 
 void rbtree_t::print(uint32_t height) const
@@ -376,32 +429,39 @@ void rbtree_t::print(uint32_t height) const
 				   arr[i].key, arr[i].value);
 	}
 
-	static void (*pprint)(const rbtree_t*, uint32_t, uint32_t, uint32_t, uint32_t) =
-	[](const rbtree_t * tree, uint32_t index, uint32_t deep, uint32_t target, uint32_t total)
+	static void (*pprint)(const rbtree_t*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, bool) =
+	[](const rbtree_t * tree, uint32_t index, uint32_t deep, uint32_t target, uint32_t total, uint32_t parent, bool space)
 	{
 		if(deep == target)
 		{
 			if(index != invalid)
-				printf("%u", tree->arr[index].key);
+			{
+				if(tree->arr[index].parent != parent)
+					printf("*");
+				else
+					printf("%u", tree->arr[index].key);
+					//printf("%u", tree->arr[index].color ? 1 : 0);
+			}
 			else
 				printf("x");
-			printf("%*s", (1 << (total - target + 1)) - 1, "");
+			if(space)
+				printf("%*s", (1 << (total - target + 1)) - 1, "");
 		}
 		else
 		{
-			pprint(tree, index != invalid ? tree->arr[index].left : invalid, deep + 1, target, total);
-			pprint(tree, index != invalid ? tree->arr[index].right : invalid, deep + 1, target, total);
+			pprint(tree, index != invalid ? tree->arr[index].left : invalid, deep + 1, target, total, index, true);
+			pprint(tree, index != invalid ? tree->arr[index].right : invalid, deep + 1, target, total, index, space);
 		}
 	};
 
 	if(height)
-	{
 		for(uint32_t i = 0; i <= height; ++i)
 		{
 			if(i < height)
 				printf("%*s", (1 << (height - i)) - 1, "");
-			pprint(this, root, 0, i, height);
+			pprint(this, root, 0, i, height, invalid, false);
 			printf("\n");
 		}
-	}
+
+	printf("valid tree : %s\n", validate() ? "yes" : "no");
 }

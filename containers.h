@@ -92,7 +92,7 @@ struct rbtree_t
 
 	// to simplify memory management let's say
 	// rb tree can only contain up to N elements
-	static const uint32_t count = 16;
+	static const uint32_t count = 256;
 	node_t arr[count];
 	uint32_t root = invalid;
 
@@ -112,6 +112,7 @@ struct rbtree_t
 	void rotate_right(uint32_t index);
 
 	void set(uint32_t key, uint32_t value);
+	void balance(uint32_t index);
 
 	void print(uint32_t height = 0) const;
 };
