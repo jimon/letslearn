@@ -96,23 +96,30 @@ struct rbtree_t
 	node_t arr[count];
 	uint32_t root = invalid;
 
+	// public
+	uint32_t get(uint32_t key) const;
+	void set(uint32_t key, uint32_t value);
+	void remove(uint32_t key);
+
+	// private
 	uint32_t allocate();
 
+	uint32_t parent(uint32_t index) const;
+	uint32_t left(uint32_t index) const;
+	uint32_t right(uint32_t index) const;
 	uint32_t grandparent(uint32_t index) const;
 	uint32_t sibling(uint32_t index) const;
 	uint32_t uncle(uint32_t index) const;
 	bool color(uint32_t index) const;
+	void set_color(uint32_t index, bool color);
 	bool validate() const;
 
 	uint32_t find_index(uint32_t key) const;
-	uint32_t get(uint32_t key) const;
-
 	void swap(uint32_t old_node, uint32_t new_node);
 	void rotate_left(uint32_t index);
 	void rotate_right(uint32_t index);
 
-	void set(uint32_t key, uint32_t value);
 	void balance(uint32_t index);
-
+	void rebalance(uint32_t index);
 	void print(uint32_t height = 0) const;
 };
