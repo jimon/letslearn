@@ -244,13 +244,19 @@ void rbtree_t::remove(uint32_t key)
 	}
 
 	swap(index, child);
-	if(parent(index) == invalid)
+	if(parent(child) == invalid)
 		set_color(child, false);
 
-	if(right(parent(index)) == index)
-		arr[parent(index)].right = invalid;
+	if(parent(index) != invalid)
+	{
+		if(right(parent(index)) == index)
+			arr[parent(index)].right = invalid;
+		else
+			arr[parent(index)].left = invalid;
+	}
 	else
-		arr[parent(index)].left = invalid;
+		root = invalid;
+
 	arr[index].free();
 	assert(validate());
 }
@@ -312,7 +318,7 @@ bool rbtree_t::validate() const
 {
 	// root must be black
 	if(root == invalid || arr[root].color)
-		return false;
+		return root == invalid;
 
 	// adjacent nodes should have different color
 	static bool (*check_color)(const rbtree_t*, uint32_t) =
@@ -472,6 +478,7 @@ void rbtree_t::rebalance(uint32_t index)
 {
 	if(parent(index) == invalid)
 		return;
+
 	if(color(sibling(index)) == true)
 	{
 		set_color(parent(index), true);
@@ -511,10 +518,10 @@ void rbtree_t::rebalance(uint32_t index)
 		set_color(left(sibling(index)), false);
 		rotate_right(sibling(index));
 	}
-	else if(left(parent(index)) == index &&
+	else if(right(parent(index)) == index &&
 			color(sibling(index)) == false &&
-			color(left(sibling(index))) == true &&
-			color(right(sibling(index))) == false)
+			color(left(sibling(index))) == false &&
+			color(right(sibling(index))) == true)
 	{
 		set_color(sibling(index), true);
 		set_color(right(sibling(index)), false);

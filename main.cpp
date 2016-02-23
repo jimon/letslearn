@@ -46,6 +46,16 @@ bool hashtable_test(float loadfactor = 1.0)
 	return true;
 }
 
+bool rbtree_test()
+{
+	rbtree_t t;
+	for(uint32_t i = 0; i < t.count; ++i)
+		t.set(i, rand());
+	while(t.root != t.invalid)
+		t.remove(rand() % t.count);
+	return true;
+}
+
 int main()
 {
 	#if 1
@@ -57,6 +67,7 @@ int main()
 
 	assert(linkedlist_test());
 	assert(hashtable_test());
+	assert(rbtree_test());
 	#endif
 
 	//for(size_t i = 0; i < 1000; ++i)
@@ -71,24 +82,10 @@ int main()
 	}
 
 	rbtree_t t;
-
-	t.set(1, 1);
-	t.set(2, 2);
-	t.set(3, 3);
-	t.set(4, 3);
-	t.set(5, 3);
-	//t.set(0, 3);
-
+	for(uint32_t i = 0; i <= 9; ++i)
+		t.set(i, 1);
+	t.print(4);
 	t.rotate_left(t.root);
-	t.rotate_left(t.root);
-	t.rotate_left(t.root);
-	t.rotate_left(t.root);
-
-	t.rotate_right(t.root);
-	t.rotate_right(t.root);
-	t.rotate_right(t.root);
-	t.rotate_right(t.root);
-
 	t.print(4);
 
 	printf("so wow\n");
