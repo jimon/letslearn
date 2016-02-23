@@ -29,7 +29,7 @@ Stuff to recall forgotten knowledge
 	- trees
 		- b-tree
 		- avl-tree
-		- red-black tree
+		- red-black tree **✓**
 		- binary heap
 		- fibonacci heap
 		- prefix tree
