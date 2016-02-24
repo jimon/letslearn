@@ -103,14 +103,13 @@ struct rbtree_t
 
 	// private
 	uint32_t allocate();
-
-	uint32_t parent(uint32_t index) const;
-	uint32_t left(uint32_t index) const;
-	uint32_t right(uint32_t index) const;
-	uint32_t grandparent(uint32_t index) const;
-	uint32_t sibling(uint32_t index) const;
-	uint32_t uncle(uint32_t index) const;
-	bool color(uint32_t index) const;
+	uint32_t parent(uint32_t index) const {return index != invalid ? arr[index].parent : invalid;}
+	uint32_t left(uint32_t index) const {return index != invalid ? arr[index].left : invalid;}
+	uint32_t right(uint32_t index) const {return index != invalid ? arr[index].right : invalid;}
+	uint32_t grandparent(uint32_t index) const {return parent(parent(index));}
+	uint32_t sibling(uint32_t index) const {return left(parent(index)) == index ? right(parent(index)) : left(parent(index));}
+	uint32_t uncle(uint32_t index) const {return sibling(parent(index));}
+	bool color(uint32_t index) const {return index != invalid ? arr[index].color : false;}
 	void set_color(uint32_t index, bool color);
 	bool validate() const;
 
@@ -122,4 +121,58 @@ struct rbtree_t
 	void balance(uint32_t index);
 	void rebalance(uint32_t index);
 	void print(uint32_t height = 0) const;
+};
+
+struct binaryheap_t
+{
+	// to simplify memory management let's say
+	// binary heap can only contain up to N elements
+	static const uint32_t count_max = 256;
+	uint32_t arr[count_max] = {0};
+	uint32_t count = 0;
+
+	// public
+	void insert(uint32_t value)
+	{
+		if(count >= count_max)
+			return;
+		++count;
+		uint32_t index = count;
+		while(index && value > arr[parent(index)])
+		{
+			arr[index] = arr[parent(index)];
+			index = parent(index);
+		}
+		arr[index] = value;
+	}
+	void remove()
+	{
+		if(!count)
+			return;
+		arr[0] = arr[--count];
+
+		auto largest = [&](uint32_t index)
+		{
+			if(left(index) < count && arr[left(index)] > arr[index])
+				index = left(index);
+			if(right(index) < count && arr[right(index)] > arr[index])
+				index = right(index);
+			return index;
+		};
+		uint32_t index = 0, largest_index = 0;
+		while(index != (largest_index = largest(index)))
+		{
+			auto t = arr[index];
+			arr[index] = arr[largest_index];
+			arr[largest_index] = t;
+			index = largest_index;
+		}
+	}
+
+	// private
+	uint32_t parent(uint32_t index) const {return (index - 1) / 2;}
+	uint32_t left(uint32_t index) const {return 2 * index + 1;}
+	uint32_t right(uint32_t index) const {return 2 * index + 2;}
+
+	void print() const;
 };

@@ -30,7 +30,7 @@ Stuff to recall forgotten knowledge
 		- b-tree
 		- avl-tree
 		- red-black tree **✓**
-		- binary heap
+		- binary heap **✓**
 		- fibonacci heap
 		- prefix tree
 	- space partitioning

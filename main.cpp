@@ -81,12 +81,15 @@ int main()
 		//assert(a.validate());
 	}
 
-	rbtree_t t;
+	binaryheap_t t;
 	for(uint32_t i = 0; i <= 9; ++i)
-		t.set(i, 1);
-	t.print(4);
-	t.rotate_left(t.root);
-	t.print(4);
+		t.insert(i);
+	t.print();
+	t.remove();
+	t.print();
+
+	//t.rotate_left(t.root);
+	//t.print(4);
 
 	printf("so wow\n");
 	return 0;

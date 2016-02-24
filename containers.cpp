@@ -273,41 +273,6 @@ uint32_t rbtree_t::allocate()
 	return invalid;
 }
 
-uint32_t rbtree_t::parent(uint32_t index) const
-{
-	return index != invalid ? arr[index].parent : invalid;
-}
-
-uint32_t rbtree_t::left(uint32_t index) const
-{
-	return index != invalid ? arr[index].left : invalid;
-}
-
-uint32_t rbtree_t::right(uint32_t index) const
-{
-	return index != invalid ? arr[index].right : invalid;
-}
-
-uint32_t rbtree_t::grandparent(uint32_t index) const
-{
-	return parent(parent(index));
-}
-
-uint32_t rbtree_t::sibling(uint32_t index) const
-{
-	return left(parent(index)) == index ? right(parent(index)) : left(parent(index));
-}
-
-uint32_t rbtree_t::uncle(uint32_t index) const
-{
-	return sibling(parent(index));
-}
-
-bool rbtree_t::color(uint32_t index) const
-{
-	return index != invalid ? arr[index].color : false;
-}
-
 void rbtree_t::set_color(uint32_t index, bool color)
 {
 	if(index != invalid)
@@ -592,4 +557,38 @@ void rbtree_t::print(uint32_t height) const
 		}
 
 	printf("valid tree : %s\n", validate() ? "yes" : "no");
+}
+
+void binaryheap_t::print() const
+{
+	static void (*pprint)(const binaryheap_t*, uint32_t, uint32_t, uint32_t, uint32_t, bool) =
+			[](const binaryheap_t * tree, uint32_t index, uint32_t deep, uint32_t target, uint32_t total, bool space)
+	{
+		if(deep == target)
+		{
+			if(index < tree->count)
+				printf("%u", tree->arr[index]);
+			else
+				printf("x");
+			if(space)
+				printf("%*s", (1 << (total - target + 1)) - 1, "");
+		}
+		else
+		{
+			pprint(tree, tree->left(index), deep + 1, target, total, true);
+			pprint(tree, tree->right(index), deep + 1, target, total, space);
+		}
+	};
+
+	uint32_t height = 0;
+	uint32_t t = count;
+	while(t >>= 1)
+		++height;
+	for(uint32_t i = 0; i <= height; ++i)
+	{
+		if(i < height)
+			printf("%*s", (1 << (height - i)) - 1, "");
+		pprint(this, 0, 0, i, height, false);
+		printf("\n");
+	}
 }
