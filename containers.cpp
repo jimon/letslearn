@@ -179,7 +179,7 @@ uint32_t rbtree_t::get(uint32_t key) const
 	return index != invalid ? arr[index].value : index;
 }
 
-void rbtree_t::set(uint32_t key, uint32_t value)
+void rbtree_t::set(uint32_t key, uint32_t value, bool force_insert)
 {
 	if(root == invalid)
 	{
@@ -193,14 +193,14 @@ void rbtree_t::set(uint32_t key, uint32_t value)
 	uint32_t index = root, last_index = invalid;
 	bool left_key = false;
 
-	while(index != invalid && arr[index].key != key)
+	while(index != invalid && (force_insert || !force_insert && arr[index].key != key))
 	{
 		last_index = index;
 		left_key = key < arr[index].key;
 		index = left_key ? left(index) : right(index);
 	}
 
-	if(index != invalid)
+	if(!force_insert && index != invalid)
 	{
 		arr[index].value = value;
 		return;

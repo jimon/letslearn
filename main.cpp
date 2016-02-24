@@ -67,6 +67,7 @@ int main()
 	assert(sorts_test(&sorts_bubble));
 	assert(sorts_test(&sorts_quicksort));
 	assert(sorts_test(&sorts_heapsort));
+	assert(sorts_test(&sorts_treesort));
 	assert(sorts_test(&sorts_mergesort));
 	assert(sorts_test(&sorts_radixsort));
 	assert(sorts_test(&sorts_bitonicsort));
@@ -81,7 +82,7 @@ int main()
 		//dataset_t a = {8,7,6,5,4,3,2,1};
 		//dataset_t a = dataset_t::random(33);
 		//a.print();
-		//sorts_heapsort(a);
+		//sorts_treesort(a);
 		//a.print();
 		//printf("valid : %i\n", a.validate());
 		//assert(a.validate());

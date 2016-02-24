@@ -1,6 +1,7 @@
 #include "sorts.h"
 #include "containers.h"
 #include <malloc.h>
+#include <assert.h>
 
 void sorts_bubble(dataset_t & data)
 {
@@ -63,6 +64,26 @@ void sorts_heapsort(dataset_t & data)
 	heap.build(data.items, (uint32_t)data.count);
 	for(size_t i = data.count; i > 0; --i)
 		data.items[i - 1] = heap.remove();
+}
+
+void sorts_treesort(dataset_t & data)
+{
+	rbtree_t tree;
+	for(size_t i = 0; i < data.count; ++i)
+		tree.set(data.items[i], 0, true);
+
+	static void (*inorder)(dataset_t&, const rbtree_t&, uint32_t, uint32_t*) =
+	[](dataset_t & data, const rbtree_t & tree, uint32_t node_index, uint32_t * data_index)
+	{
+		if(node_index == tree.invalid)
+			return;
+		assert(data_index);
+		inorder(data, tree, tree.left(node_index), data_index);
+		data.items[(*data_index)++] = tree.arr[node_index].key;
+		inorder(data, tree, tree.right(node_index), data_index);
+	};
+	uint32_t data_index = 0;
+	inorder(data, tree, tree.root, &data_index);
 }
 
 void sorts_mergesort(dataset_t & data)

@@ -11,7 +11,7 @@ Stuff to recall forgotten knowledge
 	- selection sorts
 		- heap sort **✓**
 	- insection sorts
-		- tree sort
+		- tree sort **✓**
 	- merge sorts
 		- merge sort **✓**
 	- distribution sorts

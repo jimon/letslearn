@@ -98,7 +98,7 @@ struct rbtree_t
 
 	// public
 	uint32_t get(uint32_t key) const;
-	void set(uint32_t key, uint32_t value);
+	void set(uint32_t key, uint32_t value, bool force_insert = false);
 	void remove(uint32_t key);
 
 	// private
