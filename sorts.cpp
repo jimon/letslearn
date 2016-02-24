@@ -1,4 +1,5 @@
 #include "sorts.h"
+#include "containers.h"
 #include <malloc.h>
 
 void sorts_bubble(dataset_t & data)
@@ -54,6 +55,14 @@ void sorts_quicksort(dataset_t & data)
 
 	if(data.count)
 		sort(data, 0, data.count - 1);
+}
+
+void sorts_heapsort(dataset_t & data)
+{
+	binaryheap_t heap;
+	heap.build(data.items, (uint32_t)data.count);
+	for(size_t i = data.count; i > 0; --i)
+		data.items[i - 1] = heap.remove();
 }
 
 void sorts_mergesort(dataset_t & data)

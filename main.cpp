@@ -29,7 +29,7 @@ bool linkedlist_test()
 	return true;
 }
 
-bool hashtable_test(float loadfactor = 1.0)
+bool hashtable_test(float loadfactor = 1.0f)
 {
 	hashtable_t table;
 	uint32_t keys[hashtable_t::count] = {0};
@@ -37,7 +37,12 @@ bool hashtable_test(float loadfactor = 1.0)
 	uint32_t payload = (uint32_t)((float)hashtable_t::count * loadfactor);
 
 	for(uint32_t i = 0; i < payload; ++i)
-		table.set(keys[i] = rand(), values[i] = rand());
+	{
+		uint32_t key = rand();
+		while(table.contains(key))
+			key = rand();
+		table.set(keys[i] = key, values[i] = rand());
+	}
 
 	for(uint32_t i = 0; i < payload; ++i)
 		if(values[i] != table.get(keys[i]))
@@ -61,6 +66,7 @@ int main()
 	#if 1
 	assert(sorts_test(&sorts_bubble));
 	assert(sorts_test(&sorts_quicksort));
+	assert(sorts_test(&sorts_heapsort));
 	assert(sorts_test(&sorts_mergesort));
 	assert(sorts_test(&sorts_radixsort));
 	assert(sorts_test(&sorts_bitonicsort));
@@ -75,18 +81,18 @@ int main()
 		//dataset_t a = {8,7,6,5,4,3,2,1};
 		//dataset_t a = dataset_t::random(33);
 		//a.print();
-		//sorts_radixsort(a);
+		//sorts_heapsort(a);
 		//a.print();
 		//printf("valid : %i\n", a.validate());
 		//assert(a.validate());
 	}
 
-	binaryheap_t t;
-	for(uint32_t i = 0; i <= 9; ++i)
-		t.insert(i);
-	t.print();
-	t.remove();
-	t.print();
+	//binaryheap_t t;
+	//for(uint32_t i = 0; i <= 9; ++i)
+	//	t.insert(i);
+	//t.print();
+	//t.remove();
+	//t.print();
 
 	//t.rotate_left(t.root);
 	//t.print(4);

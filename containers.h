@@ -125,9 +125,11 @@ struct rbtree_t
 
 struct binaryheap_t
 {
+	static const uint32_t invalid = 0xffffffffu;
+
 	// to simplify memory management let's say
 	// binary heap can only contain up to N elements
-	static const uint32_t count_max = 256;
+	static const uint32_t count_max = 1024;
 	uint32_t arr[count_max] = {0};
 	uint32_t count = 0;
 
@@ -137,7 +139,7 @@ struct binaryheap_t
 		if(count >= count_max)
 			return;
 		++count;
-		uint32_t index = count;
+		uint32_t index = count - 1;
 		while(index && value > arr[parent(index)])
 		{
 			arr[index] = arr[parent(index)];
@@ -145,21 +147,43 @@ struct binaryheap_t
 		}
 		arr[index] = value;
 	}
-	void remove()
+	void build(uint32_t * values, uint32_t size)
+	{
+		if(size >= count_max)
+			return;
+		count = size;
+		for(uint32_t i = 0; i < count; ++i)
+			arr[i] = values[i];
+		if(count)
+			for(uint32_t i = parent(count) + 1; i > 0; --i)
+				heapify(i - 1);
+	}
+	uint32_t remove()
 	{
 		if(!count)
-			return;
+			return invalid;
+		uint32_t result = arr[0];
 		arr[0] = arr[--count];
+		heapify(0);
+		return result;
+	}
 
-		auto largest = [&](uint32_t index)
+	// private
+	uint32_t parent(uint32_t index) const {return index ? (index - 1) / 2 : invalid;}
+	uint32_t left(uint32_t index) const {return 2 * index + 1;}
+	uint32_t right(uint32_t index) const {return 2 * index + 2;}
+	void heapify(uint32_t root_index)
+	{
+		auto largest = [this](uint32_t test)
 		{
-			if(left(index) < count && arr[left(index)] > arr[index])
-				index = left(index);
-			if(right(index) < count && arr[right(index)] > arr[index])
-				index = right(index);
-			return index;
+			uint32_t new_index = test;
+			if(left(test) < count && arr[left(test)] > arr[new_index])
+				new_index = left(test);
+			if(right(test) < count && arr[right(test)] > arr[new_index])
+				new_index = right(test);
+			return new_index;
 		};
-		uint32_t index = 0, largest_index = 0;
+		uint32_t index = root_index, largest_index = root_index;
 		while(index != (largest_index = largest(index)))
 		{
 			auto t = arr[index];
@@ -168,11 +192,6 @@ struct binaryheap_t
 			index = largest_index;
 		}
 	}
-
-	// private
-	uint32_t parent(uint32_t index) const {return (index - 1) / 2;}
-	uint32_t left(uint32_t index) const {return 2 * index + 1;}
-	uint32_t right(uint32_t index) const {return 2 * index + 2;}
 
 	void print() const;
 };

@@ -9,7 +9,7 @@ Stuff to recall forgotten knowledge
 		- bubble sort **✓**
 		- quicksort **✓**
 	- selection sorts
-		- heap sort
+		- heap sort **✓**
 	- insection sorts
 		- tree sort
 	- merge sorts
