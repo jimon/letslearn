@@ -38,6 +38,7 @@ Stuff to recall forgotten knowledge
 		- k-d tree
 		- r-tree ???
 		- bsp ???
-- path search
-	- A*
-	- Dijkstra
+- graphs
+	- path search
+		- A*
+		- Dijkstra
