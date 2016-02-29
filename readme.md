@@ -38,6 +38,8 @@ Stuff to recall forgotten knowledge
 		- k-d tree
 		- r-tree ???
 		- bsp ???
+	- probabilistic data structures
+		- [bloom filter](https://en.wikipedia.org/wiki/Bloom_filter)
 - graphs
 	- path search
 		- A*
