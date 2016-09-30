@@ -40,7 +40,7 @@ Stuff to recall forgotten knowledge
 		- bsp ???
 	- probabilistic data structures
 		- [bloom filter](https://en.wikipedia.org/wiki/Bloom_filter)
-		- Cuckoo Filter
+		- cuckoo filter
 - graphs
 	- path search
 		- A*
